@@ -1,0 +1,63 @@
+=========================
+Python
+=========================
+__pycache__/
+.py[cod]
+$py.class
+Virtual environments
+.venv/
+venv/
+env/
+ENV/
+=========================
+Environment / Secrets
+=========================
+.env
+.env.*
+!.env.example
+=========================
+IDEs / Editors
+=========================
+.vscode/
+.idea/
+=========================
+OS files
+=========================
+.DS_Store
+Thumbs.db
+desktop.ini
+=========================
+Logs
+=========================
+.log
+=========================
+Testing / Coverage
+=========================
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+=========================
+Build / Packaging
+=========================
+build/
+dist/
+.egg-info/
+.eggs/
+=========================
+Local database / data
+=========================
+.db
+.sqlite
+.sqlite3
+=========================
+Flask
+=========================
+instance/
+=========================
+Temporary files
+=========================
+.tmp
+.temp
+.swp
+.swo
