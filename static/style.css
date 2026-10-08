@@ -1,1 +1,567 @@
+/* ==========================================================================
+   The Computation Society — stylesheet
+   --------------------------------------------------------------------------
+   Styles the existing markup only:
+     body > h1                 → masthead / hero heading
+     body > div                → "About" section
+     body > div > p:first-child → lead paragraph
+     body > div > p + p        → card grid
+   Decorative details (labels, grid, graph, ruler) are pseudo-elements so the
+   HTML stays untouched.
+   ========================================================================== */
 
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+
+/* 1. Design tokens
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* Color */
+  --bg: #0d0f12;
+  --surface: #13171c;
+  --surface-hover: #181d24;
+  --text: #ece8df;
+  --text-muted: #a9adb5;
+  --text-subtle: #80868f;
+  --border: #242a32;
+  --border-strong: #353d48;
+  --accent: #e9a24c;
+  --accent-hover: #f3b86e;
+  --accent-soft: rgba(233, 162, 76, 0.08);
+  --grid-minor: rgba(236, 232, 223, 0.035);
+  --grid-major: rgba(236, 232, 223, 0.07);
+
+  /* Type */
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  --fs-display: clamp(2.5rem, 1.2rem + 5.4vw, 5.75rem);
+  --fs-lead: clamp(1.1875rem, 1.05rem + 0.55vw, 1.5rem);
+  --fs-body: 1.0625rem;
+  --fs-small: 0.9375rem;
+  --fs-label: 0.75rem;
+
+  --lh-tight: 1.02;
+  --lh-snug: 1.45;
+  --lh-body: 1.65;
+
+  /* Spacing scale (4px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 8rem;
+
+  /* Layout */
+  --max-width: 72rem;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --radius: 6px;
+  --radius-sm: 3px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-fast: 150ms;
+  --dur: 250ms;
+  --dur-reveal: 700ms;
+}
+
+/* 2. Base
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  border-top: 3px solid var(--accent);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scrollbar-color: var(--border-strong) var(--bg);
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+  margin: 0;
+  padding-block: clamp(var(--space-8), 11vw, var(--space-10)) var(--space-9);
+  overflow-x: hidden;
+
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(var(--gutter), 1fr)
+    [content-start] minmax(0, var(--max-width))
+    [content-end] minmax(var(--gutter), 1fr)
+    [full-end];
+  align-content: start;
+
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-kerning: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body > * {
+  grid-column: content;
+  position: relative;
+  z-index: 1;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* 3. Background texture — coordinate grid + graph structure
+   ========================================================================== */
+
+/* Fine coordinate grid that fades out below the hero */
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: min(52rem, 100vh);
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
+  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+  background-position: center -1px;
+  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 65% 0%, #000 25%, transparent 78%);
+  mask-image: radial-gradient(ellipse 85% 75% at 65% 0%, #000 25%, transparent 78%);
+}
+
+/* A small tree/graph plotted on the grid, top right of the hero */
+body::after {
+  content: "";
+  position: absolute;
+  top: clamp(var(--space-7), 6vw, var(--space-9));
+  right: max(var(--gutter), calc((100% - var(--max-width)) / 2));
+  width: clamp(15rem, 28vw, 24rem);
+  aspect-ratio: 1;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--accent);
+  opacity: 0.5;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 384' fill='none' stroke='black' stroke-width='1.4'%3E%3Cpath d='M288 48 L216 120 M288 48 L336 144 M216 120 L144 192 M216 120 L264 216 M144 192 L72 288 M144 192 L192 312 M336 144 L360 240'/%3E%3Cpath d='M264 216 L360 240 M72 288 L192 312' stroke-dasharray='3 5'/%3E%3Ccircle cx='288' cy='48' r='7'/%3E%3Cg fill='black' stroke='none'%3E%3Ccircle cx='216' cy='120' r='4'/%3E%3Ccircle cx='336' cy='144' r='4'/%3E%3Ccircle cx='144' cy='192' r='4'/%3E%3Ccircle cx='264' cy='216' r='4'/%3E%3Ccircle cx='72' cy='288' r='3'/%3E%3Ccircle cx='192' cy='312' r='3'/%3E%3Ccircle cx='360' cy='240' r='3'/%3E%3Ccircle cx='288' cy='48' r='2'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 384' fill='none' stroke='black' stroke-width='1.4'%3E%3Cpath d='M288 48 L216 120 M288 48 L336 144 M216 120 L144 192 M216 120 L264 216 M144 192 L72 288 M144 192 L192 312 M336 144 L360 240'/%3E%3Cpath d='M264 216 L360 240 M72 288 L192 312' stroke-dasharray='3 5'/%3E%3Ccircle cx='288' cy='48' r='7'/%3E%3Cg fill='black' stroke='none'%3E%3Ccircle cx='216' cy='120' r='4'/%3E%3Ccircle cx='336' cy='144' r='4'/%3E%3Ccircle cx='144' cy='192' r='4'/%3E%3Ccircle cx='264' cy='216' r='4'/%3E%3Ccircle cx='72' cy='288' r='3'/%3E%3Ccircle cx='192' cy='312' r='3'/%3E%3Ccircle cx='360' cy='240' r='3'/%3E%3Ccircle cx='288' cy='48' r='2'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* 4. Hero — body > h1
+   ========================================================================== */
+
+body > h1 {
+  /* Grid lets the heading text wrap at a set measure while the
+     eyebrow and ruler pseudo-elements span the full container. */
+  display: grid;
+  grid-template-columns: minmax(0, 15ch) 1fr;
+  margin: 0 0 clamp(var(--space-8), 8vw, var(--space-9));
+
+  font-size: var(--fs-display);
+  font-weight: 500;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.035em;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+/* Eyebrow label */
+body > h1::before {
+  content: "Computation \00B7  Programming \00B7  Community";
+  content: "Computation \00B7  Programming \00B7  Community" / "";
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+
+  /* Small accent square marker before the label */
+  padding-left: calc(var(--space-2) + var(--space-3));
+  background: linear-gradient(var(--accent), var(--accent)) left center / var(--space-2) var(--space-2) no-repeat;
+}
+
+/* Measurement ruler under the heading */
+body > h1::after {
+  content: "";
+  grid-column: 1 / -1;
+  height: 11px;
+  margin-top: clamp(var(--space-6), 5vw, var(--space-8));
+  border-bottom: 1px solid var(--border-strong);
+  background:
+    repeating-linear-gradient(90deg, var(--text-subtle) 0 1px, transparent 1px 120px) left bottom / 100% 11px no-repeat,
+    repeating-linear-gradient(90deg, var(--border-strong) 0 1px, transparent 1px 24px) left bottom / 100% 5px no-repeat;
+  transform-origin: left center;
+}
+
+/* 5. About section — body > div
+   ========================================================================== */
+
+body > div {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--space-5);
+  row-gap: var(--space-5);
+}
+
+/* Section label */
+body > div::before {
+  content: "\00A7  1 \2014  About";
+  content: "\00A7  1 \2014  About" / "";
+  grid-column: 1 / span 3;
+  padding-top: 0.55em;
+
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* Closing rule with an end-of-proof mark */
+body > div::after {
+  content: "\220E";
+  content: "\220E" / "";
+  grid-column: 1 / -1;
+  margin-top: var(--space-8);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: var(--fs-lead);
+  line-height: 1;
+  color: var(--text-subtle);
+}
+
+body > div > p {
+  margin: 0;
+}
+
+/* Lead paragraph */
+body > div > p:first-child {
+  grid-column: 4 / span 8;
+  margin-bottom: var(--space-7);
+  max-width: 38ch;
+
+  font-size: var(--fs-lead);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+  color: var(--text);
+  text-wrap: pretty;
+}
+
+/* 6. Cards — body > div > p + p
+   ========================================================================== */
+
+body > div > p + p {
+  position: relative;
+  grid-column: span 4;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6);
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  text-wrap: pretty;
+
+  transition:
+    transform var(--dur) var(--ease),
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+
+/* Card metadata label */
+body > div > p + p::before {
+  display: block;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px dashed var(--border-strong);
+
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  transition: color var(--dur) var(--ease);
+}
+
+body > div > p:nth-child(2)::before {
+  content: "1.1 \2003 Get involved";
+  content: "1.1 \2003 Get involved" / "";
+}
+
+body > div > p:nth-child(3)::before {
+  content: "1.2 \2003 All levels";
+  content: "1.2 \2003 All levels" / "";
+}
+
+body > div > p:nth-child(4)::before {
+  content: "1.3 \2003 Upcoming";
+  content: "1.3 \2003 Upcoming" / "";
+}
+
+/* Registration mark in the corner, like a technical drawing */
+body > div > p + p::after {
+  content: "";
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 9px;
+  height: 9px;
+  border-top: 1px solid var(--border-strong);
+  border-right: 1px solid var(--border-strong);
+  transition: border-color var(--dur) var(--ease);
+}
+
+body > div > p + p:hover {
+  transform: translateY(-2px);
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+}
+
+body > div > p + p:hover::after {
+  border-color: var(--accent);
+}
+
+body > div > p + p:hover::before {
+  color: var(--text-muted);
+}
+
+/* Featured card — the call to the next meeting */
+body > div > p:last-child {
+  background:
+    linear-gradient(var(--accent-soft), var(--accent-soft)),
+    var(--surface);
+  border-color: rgba(233, 162, 76, 0.28);
+  box-shadow: inset 0 2px 0 var(--accent);
+  color: var(--text);
+}
+
+body > div > p:last-child::before {
+  color: var(--accent);
+  border-bottom-color: rgba(233, 162, 76, 0.3);
+}
+
+body > div > p:last-child::after {
+  border-color: var(--accent);
+}
+
+body > div > p:last-child:hover {
+  background:
+    linear-gradient(rgba(233, 162, 76, 0.12), rgba(233, 162, 76, 0.12)),
+    var(--surface-hover);
+  border-color: rgba(233, 162, 76, 0.45);
+}
+
+body > div > p:last-child:hover::before {
+  color: var(--accent-hover);
+}
+
+/* 7. Motion — load reveal
+   ========================================================================== */
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+}
+
+@keyframes draw {
+  from { transform: scaleX(0); }
+}
+
+body::before,
+body::after {
+  animation: fade 1200ms var(--ease) both;
+}
+
+body > h1::before { animation: reveal var(--dur-reveal) var(--ease) both; }
+body > h1          { animation: reveal var(--dur-reveal) var(--ease) 60ms both; }
+body > h1::after   { animation: draw 1100ms var(--ease) 250ms both; }
+body > div::before,
+body > div > p:first-child { animation: reveal var(--dur-reveal) var(--ease) 300ms both; }
+body > div > p:nth-child(2) { animation: reveal var(--dur-reveal) var(--ease) 420ms both; }
+body > div > p:nth-child(3) { animation: reveal var(--dur-reveal) var(--ease) 500ms both; }
+body > div > p:nth-child(4) { animation: reveal var(--dur-reveal) var(--ease) 580ms both; }
+
+/* 8. Responsive
+   ========================================================================== */
+
+/* ≤ 1199px — slightly tighter section gutters */
+@media (max-width: 74.9375em) {
+  body > div {
+    column-gap: var(--space-4);
+    row-gap: var(--space-4);
+  }
+}
+
+/* ≤ 991px — two-column cards, featured card spans full width */
+@media (max-width: 61.9375em) {
+  body > div::before {
+    grid-column: 1 / -1;
+    padding-top: 0;
+  }
+
+  body > div > p:first-child {
+    grid-column: 1 / -1;
+    max-width: 34ch;
+  }
+
+  body > div > p + p {
+    grid-column: span 6;
+  }
+
+  body > div > p:last-child {
+    grid-column: 1 / -1;
+  }
+
+  body::after {
+    opacity: 0.32;
+  }
+}
+
+/* ≤ 767px — single column, graph removed so it never sits behind text */
+@media (max-width: 47.9375em) {
+  :root {
+    --fs-body: 1rem;
+  }
+
+  body::after {
+    display: none;
+  }
+
+  body::before {
+    background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+    -webkit-mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 20%, transparent 75%);
+    mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 20%, transparent 75%);
+  }
+
+  body > div > p + p,
+  body > div > p:last-child {
+    grid-column: 1 / -1;
+    padding: var(--space-5) var(--space-5) var(--space-6);
+  }
+
+  body > div > p + p::before {
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+  }
+
+  body > div > p:first-child {
+    margin-bottom: var(--space-5);
+  }
+
+  body > div::after {
+    margin-top: var(--space-7);
+  }
+}
+
+/* ≤ 479px — small phones */
+@media (max-width: 29.9375em) {
+  body {
+    padding-block: var(--space-7) var(--space-8);
+  }
+
+  body > h1 {
+    grid-template-columns: minmax(0, 1fr);
+    letter-spacing: -0.03em;
+  }
+
+  body > h1::before {
+    margin-bottom: var(--space-5);
+    letter-spacing: 0.08em;
+  }
+
+  body > h1::after {
+    background-size: 100% 9px, 100% 4px;
+    height: 9px;
+  }
+
+  body > div > p:first-child {
+    max-width: none;
+  }
+}
+
+/* 9. Accessibility preferences
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  body > div > p + p:hover {
+    transform: none;
+  }
+}
+
+@media (forced-colors: active) {
+  body::before,
+  body::after,
+  body > h1::after {
+    display: none;
+  }
+
+  body > div > p + p {
+    border: 1px solid CanvasText;
+  }
+}
