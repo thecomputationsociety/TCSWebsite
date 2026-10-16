@@ -200,8 +200,8 @@ body > h1 {
 
 /* Eyebrow label */
 body > h1::before {
-  content: "Computation \00B7  Programming \00B7  Community";
-  content: "Computation \00B7  Programming \00B7  Community" / "";
+  content: "Programming \00B7  Community";
+  content: "Programming \00B7  Community" / "";
   grid-column: 1 / -1;
   display: flex;
   align-items: center;
