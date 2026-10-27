@@ -39,3 +39,12 @@ Change text in `templates/index.html` or `templates/events.html`, then run
 `python events.py build`. Placeholders like `{{ upcoming_events }}` are filled in
 by the script — leave them in place. Don't edit files in `site/` directly; they
 are overwritten on every build.
+
+
+TL:DR
+
+(homies with the repo cloned): 
+python events.py add
+git add . 
+git commit -m "comment"
+git push (site updates after around a minute)
