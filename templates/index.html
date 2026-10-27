@@ -1,20 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<link rel="stylesheet" href="static/style.css">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Computation Society</title>
-<h1>The Computation Society</h1>
-</head>
-<body>
+        <section class="hero">
+            <p class="eyebrow">Programming &middot; Community</p>
+            <h1>The Computation Society</h1>
+            <div class="button-row">
+                <a class="btn btn-primary" href="events.html">See upcoming events</a>
+                <a class="btn btn-secondary" href="#about">About us</a>
+            </div>
+            <div class="ruler" aria-hidden="true"></div>
+        </section>
 
-    <div>
-        <p>Welcome to the Computation Society! We are a community of enthusiasts who love to explore the world of computation and programming. </p>
-        <p>Join us for discussions, projects, and events that will enhance your skills and knowledge in the field.</p>
-        <p>Whether you are a beginner or an experienced programmer, there is something for everyone. Connect with like-minded individuals, collaborate on projects, and learn from each other.</p>
-        <p>Stay tuned for upcoming events and activities. We look forward to seeing you at our next meeting!</p>
-    </div>
-    
-</body>
-</html>
+        <section class="section" id="about">
+            <p class="section-label">&sect; 1 &mdash; About</p>
+            <p class="lead">Welcome to the Computation Society! We are a community of enthusiasts who love to explore the world of computation and programming.</p>
+
+            <div class="cards">
+                <article class="card">
+                    <p class="card-label">1.1 &emsp; Get involved</p>
+                    <p>Join us for discussions, projects, and events that will enhance your skills and knowledge in the field.</p>
+                </article>
+                <article class="card">
+                    <p class="card-label">1.2 &emsp; All levels</p>
+                    <p>Whether you are a beginner or an experienced programmer, there is something for everyone. Connect with like-minded individuals, collaborate on projects, and learn from each other.</p>
+                </article>
+{{ next_event_card }}
+            </div>
+        </section>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <a class="brand" href="index.html">The Computation Society</a>
+        <nav class="site-nav" aria-label="Main">
+            <a class="btn btn-ghost{{ nav_home }}" href="index.html">Home</a>
+            <a class="btn btn-ghost{{ nav_events }}" href="events.html">Events</a>
+        </nav>
+    </header>
+
+    <main>
+{{ content }}
+    </main>
+
+    <footer class="site-footer">
+        <span>&copy; {{ year }} The Computation Society</span>
+        <span aria-hidden="true">&#8718;</span>
+    </footer>
+
+</body>
+</html>
